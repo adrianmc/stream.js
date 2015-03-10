@@ -175,6 +175,17 @@ Stream.prototype = {
             }
         );
     },
+    takeWhile: function( condition ) {
+      if(this.empty()) return new Stream();
+      var self = this, result = [];
+
+      while( condition( self.head() ) ) {
+        result.push( self.head() );
+        self = self.tail();
+      }
+
+      return Stream.fromArray(result);
+    },
     drop: function( n ){
         var self = this; 
         
@@ -202,6 +213,20 @@ Stream.prototype = {
         }
 
         return false;
+    },
+    toArray:  function( n ) {
+        var target, result = [];
+        if ( typeof n != 'undefined' ) {
+            target = this.take( n );
+        }
+        else {
+            // requires finite stream
+            target = this;
+        }
+        target.walk( function ( x ) {
+            result.push( x );
+        } );
+        return result;
     },
     print: function( n ) {
         var target;
